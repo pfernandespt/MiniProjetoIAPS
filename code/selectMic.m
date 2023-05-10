@@ -43,4 +43,3 @@ function index = selectMic()
         end
     end
 end
-
