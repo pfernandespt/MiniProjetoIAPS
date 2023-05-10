@@ -42,7 +42,5 @@ function index = selectMic()
             break;
         end
     end
-    
-    
 end
 
