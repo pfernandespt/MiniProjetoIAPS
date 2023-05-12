@@ -11,8 +11,8 @@ symbols = ['1' '2' '3' 'A';
 fs = 48000; % sampling frequency for the audio
 ts = 1/fs;
 
-digit_dur = 0.1; % digit sound duration (s)
-inter_dur = 0.1; % inter digit silence duration (s)
+digit_dur = 0.04; % digit sound duration (s)
+inter_dur = 0.005; % inter digit silence duration (s)
 
 digit_smp = fs * digit_dur;
 inter_smp = fs * inter_dur;
@@ -34,5 +34,5 @@ t = (0:digit_smp-1) * ts;
     end
     
     sound(message,fs);
-    fprintf("dur: %d ms\n",ts*length(message)*1e3);
+    %fprintf("dur: %d ms\n",ts*length(message)*1e3);
 end
