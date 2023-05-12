@@ -4,7 +4,7 @@ fs = 20e3;
 chunk_dur = 0.1;
 chunk = fs * chunk_dur;
 
-audio_input_id = -1; % DEFAULT
+audio_input_id = 2; % DEFAULT
 rec = audiorecorder(fs,16,1,audio_input_id);
 
 stop(rec);
