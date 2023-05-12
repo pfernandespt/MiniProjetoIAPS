@@ -1,0 +1,13 @@
+20000Hz freq amostragem
+
+10000Hz disponiveis
+	2 canais
+
+5000 Hz para cada canal
+	4 dimensões
+
+1250 Hz para cada dimensão
+	4 frequencias precisas
+
+
+
