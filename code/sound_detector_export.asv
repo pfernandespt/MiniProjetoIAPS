@@ -28,8 +28,8 @@ while(isrecording(rec))
         if(E < trigger)
             fprintf("Ended\n")
             audio = audio(first_pos:end);
-            app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",input_receiver(audio))];
-            plot(app.graph,audio);
+            app.msg_box.Value = [app.msg_box.Value; '' ;strcat("← ",input_receiver(audio))];
+            scatter(app.grapg)
             is_playing = 0;
             reset(rec);
             pause(chunk_dur*2);

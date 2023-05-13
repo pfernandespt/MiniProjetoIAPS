@@ -1,4 +1,4 @@
-function input_receiver(audio)
+function message = input_receiver(audio)
 
 f_ver = [697  770  852  941 ];
 f_hor = [1209 1336 1477 1633];
