@@ -1,10 +1,12 @@
 clear, clc, close all;
 
+run('gui');
+
 fs = 20e3;
 chunk_dur = 0.1;
 chunk = fs * chunk_dur;
 
-audio_input_id = 2; % DEFAULT
+audio_input_id = 1; % DEFAULT
 rec = audiorecorder(fs,16,1,audio_input_id);
 
 stop(rec);
@@ -13,7 +15,7 @@ record(rec);
 % Calculo da energia de trigger
 pause(chunk_dur * 2);
 audio = getaudiodata(rec);
-trigger = sum(abs(audio).^2) * 2;
+trigger = sum(abs(audio).^2) * 10;
 
 is_playing = 0;
 
@@ -30,7 +32,7 @@ while(true)
             plot(audio);
             is_playing = 0;
             reset(rec);
-            pause(chunk_dur);
+            pause(chunk_dur*2);
         end
     elseif(E > trigger)
         fprintf("Started ");
