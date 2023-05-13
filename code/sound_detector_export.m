@@ -10,6 +10,10 @@ app = findobj(gui);
 
 stop(rec);
 record(rec);
+
+while(~isrecording(rec))
+end
+
 fprintf("Recording!\n");
 
 % Calculo da energia de trigger
