@@ -1,13 +1,12 @@
 clear, clc, close all;
 
-run('gui');
-
 fs = 20e3;
 chunk_dur = 0.1;
 chunk = fs * chunk_dur;
 
-audio_input_id = 1; % DEFAULT
-rec = audiorecorder(fs,16,1,audio_input_id);
+rec = audiorecorder(fs,16,1,selectMic());
+
+run('gui');
 
 stop(rec);
 record(rec);
@@ -20,7 +19,7 @@ trigger = sum(abs(audio).^2) * 10;
 
 is_playing = 0;
 
-while(true)
+while(isrecording(rec))
     audio = getaudiodata(rec);
     audio_chunk = audio((end - chunk + 1):end);
     E = sum(abs(audio_chunk).^2);
@@ -46,6 +45,8 @@ while(true)
     end
     pause(chunk_dur);
 end
+
+delete(rec);
 
 function reset(obj)
         %fprintf("DEBUG BEFORE: %d\n",obj.TotalSamples);
