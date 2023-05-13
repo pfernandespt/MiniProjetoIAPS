@@ -11,6 +11,7 @@ rec = audiorecorder(fs,16,1,audio_input_id);
 
 stop(rec);
 record(rec);
+fprintf("Recording!\n");
 
 % Calculo da energia de trigger
 pause(chunk_dur * 2);
