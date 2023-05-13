@@ -17,7 +17,7 @@ end
 fprintf("Recording!\n");
 
 % Calculo da energia de trigger
-pause(chunk_dur * 2);
+pause(chunk_dur * 10);
 audio = getaudiodata(rec);
 trigger = sum(abs(audio).^2) * 10;
 

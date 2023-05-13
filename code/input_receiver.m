@@ -3,7 +3,7 @@ function message = input_receiver(audio)
 f_ver = [697  770  852  941 ];
 f_hor = [1209 1336 1477 1633];
 filter_num = 60;
-min_digit_dim = 100;
+min_digit_dim = 500;
 ver_tol = 70/2;
 hor_tol = 120/2;
 fs = 20e3;
@@ -14,10 +14,18 @@ symbols = ['1' '2' '3' 'A';
            '*' '0' '#' 'D'];
 
 h1 = ones(1,filter_num) * 10 / filter_num;
+h1 = conv(h1,ones(1,ceil(filter_num/2)));
+
 
 x = conv(abs(audio),h1);
 trigger = (max(x) + min(x(filter_num + 10 : length(x) - filter_num - 10))) / 2;
 is_digit = (x > trigger)';
+
+hold off;
+plot(audio);
+hold on;
+plot(x);
+plot(is_digit);
 
 inversion = [is_digit 0] - [0 is_digit];
 
