@@ -1,6 +1,6 @@
 20000Hz freq amostragem
 
-10000Hz disponiveis
+10000Hz disponiveis -> 250 - 9750
 	2 canais
 
 5000 Hz para cada canal

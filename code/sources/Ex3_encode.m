@@ -8,19 +8,19 @@ symbols = ['1' '2' '3' 'A';
            '7' '8' '9' 'C';
            '*' '0' '#' 'D'];
 
-fs = 48000; % sampling frequency for the audio
+fs = 20e3; % sampling frequency for the audio
 
-digit_dur = 0.1; % digit sound duration (s)
-inter_dur = 0; % inter digit silence duration (s)
+digit_dur = 0.04; % digit sound duration (s)
+inter_dur = 0.005; % inter digit silence duration (s)
 
 digit_smp = fs * digit_dur;
 inter_smp = fs * inter_dur;
 
 t = (0:digit_smp-1) / fs;
 
-noise_int = 0; % noise intensity
+noise_int = 0.2; % noise intensity
 
-seq = '12345678901234567890123456789012345678901234567890123456789012345678901234567890';
+seq = '1234567890'
 
 digits = zeros(length(seq),digit_smp);
 audio = zeros(1,fs * digit_dur * length(seq) + inter_smp * (length(seq) +1));

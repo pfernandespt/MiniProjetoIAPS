@@ -36,7 +36,7 @@ while(isrecording(rec))
             plot(app.graph,audio);
             is_playing = 0;
             reset(rec);
-            pause(chunk_dur*2);
+            pause(chunk_dur*5);
         end
     elseif(E > trigger)
         fprintf("Started ");
