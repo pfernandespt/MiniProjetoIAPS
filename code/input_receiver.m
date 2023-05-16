@@ -16,10 +16,13 @@ symbols = ['1' '2' '3' 'A';
 h1 = ones(1,filter_num) * 10 / filter_num;
 h1 = conv(h1,ones(1,ceil(filter_num/2)));
 
+tic
 
 x = conv(abs(audio),h1);
 trigger = (max(x) + min(x(filter_num + 10 : length(x) - filter_num - 10))) / 2;
 is_digit = (x > trigger)';
+
+toc
 
 hold off;
 plot(audio);
