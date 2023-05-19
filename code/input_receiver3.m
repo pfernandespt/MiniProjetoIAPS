@@ -2,7 +2,7 @@ function symbols = input_receiver3(audio)
 
     %  ========= Fuction Parameters ====================================
 
-    fs = 20e3;                          % Sampling Fequency
+    fs = 24e3;                          % Sampling Fequency
 
     freqs = [ 240  480  720 960;       % Frequencies in the 4D
              1200 1440 1680 1920;
@@ -14,7 +14,7 @@ function symbols = input_receiver3(audio)
     samples = [24 12 8 6 4.8 4 3 2.4 2 1.6 1.5 1.2 1 0.8 0.6 0.5 0.25 0.3 0.2] * 1e3;
 
     freq_tol = 120;                     % Frequency tolerance
-    phase_tol = pi/4 * 0.95;                   % Phase tolerance
+    phase_tol = pi/4;                   % Phase tolerance
     
     [num, den] = butter(5,0.02,'low');
 

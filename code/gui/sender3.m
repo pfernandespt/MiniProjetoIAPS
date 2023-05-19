@@ -4,7 +4,7 @@ function sender3(str)
 
     %  ========= Fuction Parameters ====================================
 
-    fs = 20e3;                          % Sampling Fequency
+    fs = 24e3;                         % Sampling Fequency
     ts = 1/fs;
 
     freqs = [ 240  480  720 960;       % Frequencies in the 4D
@@ -23,7 +23,7 @@ function sender3(str)
 
     %  ========= Digit Creation Handles ================================
 
-    df = @(f,p) 0.25 * sin(2*pi*f.*t - p);       % digit fragment            % COLOQUEI MENOS AQUI!!!!!
+    df = @(f,p) 0.25 * sin(2*pi*f.*t + p);       % digit fragment
     digit = @(s1,s2) df(freqs(1,s1(1)),phases(s2(1))) + ...
                      df(freqs(2,s1(2)),phases(s2(2))) + ...
                      df(freqs(3,s1(3)),phases(s2(3))) + ...

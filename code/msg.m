@@ -1,6 +1,6 @@
 clear, clc, close all;
 
-fs = 20e3;
+fs = 24e3;
 chunk_dur = 0.1;
 chunk = fs * chunk_dur;
 

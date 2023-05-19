@@ -48,6 +48,7 @@ function symbols = input_receiver2(audio)
         %DEBUG
         %figure()
         %stem(Sf,S,'.');
+        fprintf("Received %d samples and de freq_res is %d\n",length(S),freq_res);
 
         for j = 1:4
             min_pos = floor((freqs(j,1)-tol)/freq_res); % Separate
