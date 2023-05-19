@@ -1,4 +1,4 @@
-function sender4(str)
+function sender4(str, channel,digit_smp)
 
     tic
 
@@ -12,18 +12,20 @@ function sender4(str)
              2160 2400 2640 2880;
              3120 3360 3600 3840];
 
-    digit_dur = 0.0104;                % digit sound duration (s)
-    inter_dur = 0.005;               % inter digit silence duration (s)
+    %digit_dur = 0.0104;                % digit sound duration (s)
+    %inter_dur = 0.005;                 % inter digit silence duration (s)
     %digit_smp = fs * digit_dur;
-    digit_smp = 430;
+    %digit_smp = 500;
     %inter_smp = fs * inter_dur;
     inter_smp = 50;
 
     t = (0:digit_smp-1) * ts;       % time definition for each digit
 
+    offset = 7920 * (channel -1);
+
     %  ========= Digit Creation Handles ================================
 
-    df = @(f) 0.25 * sin(2*pi*f.*t);       % digit fragment
+    df = @(f) 0.25 * sin(2*pi*(f + offset).*t);       % digit fragment
     digit = @(s) df(freqs(1,s(1))) + df(freqs(2,s(2))) +...
                  df(freqs(3,s(3))) + df(freqs(4,s(4)));  % digit
 

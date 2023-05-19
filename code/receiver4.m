@@ -1,4 +1,4 @@
-function symbols = receiver4(audio)
+function symbols = receiver4(audio,channel)
 
     %  ========= Fuction Parameters ====================================
 
@@ -15,6 +15,8 @@ function symbols = receiver4(audio)
 
     [num, den] = butter(5,0.02,'low');
     filter_delay = 50;              % Filter delay in number of samples
+
+    offset = 7920 * (channel - 1);
 
     %  ========= Symbol Detection ======================================
 
@@ -61,11 +63,11 @@ function symbols = receiver4(audio)
         %fprintf("Received %d samples and de freq_res is %d\n",length(S),freq_res);
 
         for j = 1:4
-            min_pos = floor((freqs(j,1)-tol)/freq_res); % Separate
-            max_pos = ceil((freqs(j,4)+tol)/freq_res);
+            min_pos = floor((freqs(j,1)+offset-tol)/freq_res); % Separate
+            max_pos = ceil((freqs(j,4)+offset+tol)/freq_res);
 
-            [~,pos] = max(S(min_pos:max_pos));      % Get max position
-            est_freq = Sf(min_pos + pos - 1);       % Estimate frequency
+            [~,pos] = max(S(min_pos:max_pos));         % Get max position
+            est_freq = Sf(min_pos + pos - 1) - offset; % Estimate frequency
 
             %DEBUG
             %xline([min_pos max_pos],'Color','red');

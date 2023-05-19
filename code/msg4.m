@@ -8,6 +8,9 @@ rec = audiorecorder(fs,16,1,selectMic());
 
 app = findobj(gui4);
 
+[num_ch1, den_ch1] = butter(3,0.5,"low");
+[num_ch2, den_ch2] = butter(3,0.5,"high");
+
 stop(rec);
 record(rec);
 
@@ -19,20 +22,27 @@ fprintf("Recording!\n");
 % Calculo da energia de trigger
 pause(chunk_dur * 10);
 audio = getaudiodata(rec);
-trigger = sum(abs(audio).^2) * 10;
+trigger = max(sum(abs(audio).^2) * 10,1);
 
 is_playing = 0;
 
 while(isrecording(rec))
     audio = getaudiodata(rec);
     audio_chunk = audio((end - chunk + 1):end);
+
+    if(app.channel.Value == 1)
+        audio_chunk = filter(num_ch1,den_ch1,audio_chunk);
+    else
+        audio_chunk = filter(num_ch2,den_ch2,audio_chunk);
+    end
+
     E = sum(abs(audio_chunk).^2);
 
     if(is_playing)
         if(E < trigger)
             fprintf("Ended\n")
             audio = audio(first_pos:end);
-            app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",decrypt(symbol_to_ascii(receiver4(audio)),app.password.Value))];
+            app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",decrypt(symbol_to_ascii(receiver4(audio,app.channel.Value)),app.password.Value))];
             plot(app.graph,audio);
             is_playing = 0;
             reset(rec);
