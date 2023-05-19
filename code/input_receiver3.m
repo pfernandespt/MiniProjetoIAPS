@@ -4,27 +4,32 @@ function symbols = input_receiver3(audio)
 
     fs = 20e3;                          % Sampling Fequency
 
-    freqs = [ 250  500  750 1000;       % Frequencies in the 4D
-             1250 1500 1750 2000;
-             2250 2500 2750 3000;
-             3250 3500 3750 4000];
+    freqs = [ 240  480  720 960;       % Frequencies in the 4D
+             1200 1440 1680 1920;
+             2160 2400 2640 2880;
+             3120 3360 3600 3840];
 
     phases = [-3/4 -1/4 1/4 3/4] * pi;  % Possible Phases
 
-    freq_tol = 120;                     % Frequency tolerance
-    phase_tol = pi/4;                   % Phase tolerance
-    min_samples = 100;                  % Minimum samples per digit
+    samples = [24 12 8 6 4.8 4 3 2.4 2 1.6 1.5 1.2 1 0.8 0.6 0.5 0.25 0.3 0.2] * 1e3;
 
+    freq_tol = 120;                     % Frequency tolerance
+    phase_tol = pi/4 * 0.95;                   % Phase tolerance
+    
     [num, den] = butter(5,0.02,'low');
 
     %  ========= Symbol Detection ======================================
-
     audio = audio';
 
     an_detect = filter(num,den,abs(audio));     % Analog symbol detection
 
     trigger = mean([max(an_detect) min(an_detect)]);
     dg_detect = (an_detect > trigger);          % Conversion to Digital
+
+%     figure()
+%     hold on;
+%     plot(audio);
+%     plot(dg_detect);
 
     %  ========= Symbol Positions Organization =========================
 
@@ -37,12 +42,21 @@ function symbols = input_receiver3(audio)
     
 
     for i = 1:2:(num_symbols-1)
-        if((slot(2,(i+1)/2) - slot(1,(i+1)/2) + 1) < min_samples)   % Check dimension
-            num_symbols = num_symbols - 1;
+        if((slot(2,(i+1)/2) - slot(1,(i+1)/2) + 1) < samples(end))   % Check dimension
+            num_symbols = num_symbols - 2;
             fprintf("DEBUG: slot isn't big enough (%d)\n",i);
             continue;
         end
-        s = audio(slot(1,(i+1)/2):slot(2,(i+1)/2));  % Isolate symbol
+        s = audio((slot(1,(i+1)/2)-50):(slot(2,(i+1)/2)-50));  % Isolate symbol
+
+        fprintf("was: %d",length(s));
+
+        s = s(1:samples(find(length(s) > samples,1)));  % Adapt samples to the minimum required
+
+        fprintf("  is: %d",length(s));
+
+%         figure()
+%         plot(s);
 
         S = fft(s);                             % Fast Fourier Transform
         Smod = abs(S);                          % FFT module
@@ -55,6 +69,8 @@ function symbols = input_receiver3(audio)
         stem(Smod,'.');
         hold on;
         stem(Sphase,'.');
+        yline(phases);
+        yline(phases-phase_tol,'Color','red');
 
         for j = 1:4
             min_pos = floor((freqs(j,1)-freq_tol)/freq_res); % Separate
@@ -63,7 +79,7 @@ function symbols = input_receiver3(audio)
             [~,pos] = max(Smod(min_pos:max_pos));      % Get max position
             pos = pos + min_pos -1;
             est_freq = Sf(pos);             % Estimate frequency
-            est_phase = Sphase(pos-1);        % Estimate phase          % COLOQUEI pos-1 AQUI
+            est_phase = Sphase(pos);        % Estimate phase
 
             %DEBUG
             %xline([min_pos max_pos],'Color','red');
@@ -78,6 +94,6 @@ function symbols = input_receiver3(audio)
 
     end
 
-    symbols = symbols(:,1:num_symbols);         % Delete unused positions
+    symbols = symbols(:,1:num_symbols)          % Delete unused positions
 
 end

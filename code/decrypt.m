@@ -1,6 +1,6 @@
 function msg = decrypt(msg, pwd)
     
-    if(nargin == 1 || pwd(1) == ' ')
+    if(nargin == 1 || isempty(pwd))
         return;
     end
 

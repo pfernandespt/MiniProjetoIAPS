@@ -12,8 +12,8 @@ function sender2(str)
              2250 2500 2750 3000;
              3250 3500 3750 4000];
 
-    digit_dur = 0.02;               % digit sound duration (s)
-    inter_dur = 0.005;              % inter digit silence duration (s)
+    digit_dur = 0.02;                % digit sound duration (s)
+    inter_dur = 0.005;               % inter digit silence duration (s)
     digit_smp = fs * digit_dur;
     inter_smp = fs * inter_dur;
 

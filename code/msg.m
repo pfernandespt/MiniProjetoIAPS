@@ -4,9 +4,9 @@ fs = 20e3;
 chunk_dur = 0.1;
 chunk = fs * chunk_dur;
 
-rec = audiorecorder(fs,16,1,selectMic());
-
 app = findobj(gui3);
+
+rec = audiorecorder(fs,16,1,selectMic());
 
 stop(rec);
 record(rec);
