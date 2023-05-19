@@ -13,8 +13,8 @@ function symbols = receiver4(audio,channel)
 
     tol = 120;                      % Frequency tolerance
 
-    [num, den] = butter(3,0.01,'low');
-    filter_delay = 30;              % Filter delay in number of samples
+    [num, den] = butter(5,0.02,'low');
+    filter_delay = 50;              % Filter delay in number of samples
 
     offset = 7920 * (channel - 1);
 
@@ -22,7 +22,6 @@ function symbols = receiver4(audio,channel)
 
     audio = audio';
 
-    %an_detect = conv(ones(1,100),abs(audio));
     an_detect = filter(num,den,abs(audio));     % Analog symbol detection
 
     trigger = mean([max(an_detect) min(an_detect)]);
@@ -30,11 +29,10 @@ function symbols = receiver4(audio,channel)
     dg_detect = dg_detect((filter_delay+1):end);
 
     % DEBUG
-    %plot(audio);
-    hold on;
-    plot(an_detect);
-    plot(dg_detect);
-    hold off;
+    % plot(audio);
+    % hold on;
+    % plot(dg_detect);
+    % hold off;
 
     %  ========= Symbol Positions Organization =========================
 
