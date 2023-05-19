@@ -1,5 +1,7 @@
 clear, clc, close all;
 
+addpath('gui\');
+
 fs = 24e3;
 chunk_dur = 0.1;
 chunk = fs * chunk_dur;
@@ -61,6 +63,7 @@ while(isrecording(rec))
 end
 
 delete(rec);
+delete(app);
 
 function reset(obj)
         %fprintf("DEBUG BEFORE: %d\n",obj.TotalSamples);

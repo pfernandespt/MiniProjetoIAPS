@@ -40,13 +40,12 @@ function symbols = receiver4(audio,channel)
     slot = [find(inv == 1);find(inv == -1)];
 
     %  ========= Symbol Decoding =======================================
-    num_symbols = length(slot);
-    symbols = zeros(4,num_symbols);
+    current_symbol = 1;
+    symbols = zeros(4,size(slot,2));
     
 
-    for i = 1:length(slot)
+    for i = 1:size(slot,2)
         if((slot(2,i) - slot(1,i) + 1) < samples(end))   % Check dimension
-            num_symbols = num_symbols - 1;
             fprintf("DEBUG: slot isn't big enough (%d)\n",i);
             continue;
         end
@@ -72,8 +71,20 @@ function symbols = receiver4(audio,channel)
             %DEBUG
             %xline([min_pos max_pos],'Color','red');
             %fprintf("%d    ",est_freq);
+            
+            sub_symbol = find(((est_freq - tol) < freqs(j,:)),1);
+            if(isempty(sub_symbol))
+                sub_symbol = 0;
+            end
 
-            symbols(j,i) = find(((est_freq - tol) < freqs(j,:)),1);
+            symbols(j,current_symbol) = sub_symbol;
+            
+        end
+
+        if(isempty(find(symbols(:,current_symbol) == 0,1)))
+            current_symbol = current_symbol +1;
+        else
+            fprintf("This is not a digit...\n")
         end
 
         %DEBUG
@@ -81,6 +92,6 @@ function symbols = receiver4(audio,channel)
 
     end
 
-    symbols = symbols(:,1:num_symbols);         % Delete unused positions
+    symbols = symbols(:,1:(current_symbol-1));         % Delete unused positions
 
 end
