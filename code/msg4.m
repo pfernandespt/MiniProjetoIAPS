@@ -1,6 +1,7 @@
 clear, clc, close all;
 
 addpath('gui\');
+cleanupObj = onCleanup(@endProgram);
 
 fs = 24e3;
 chunk_dur = 0.1;
@@ -24,11 +25,12 @@ fprintf("Recording!\n");
 % Calculo da energia de trigger
 pause(chunk_dur * 10);
 audio = getaudiodata(rec);
-trigger = max(sum(abs(audio).^2) * 10,1);
+app.trigger.Value = max(sum(abs(audio).^2) * 10,5);
 
 is_playing = 0;
 
 while(isrecording(rec))
+    trigger = app.trigger.Value;
     audio = getaudiodata(rec);
     audio_chunk = audio((end - chunk + 1):end);
 
@@ -44,8 +46,11 @@ while(isrecording(rec))
         if(E < trigger)
             fprintf("Ended\n")
             audio = audio(first_pos:end);
-            app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",decrypt(symbol_to_ascii(receiver4(audio,app.channel.Value)),app.password.Value))];
-            plot(app.graph,audio);
+            message = decrypt(symbol_to_ascii(receiver4(audio,app.channel.Value)),app.password.Value);
+            if(~isempty(message))
+                app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",message)];
+                plot(app.graph,audio);
+            end
             is_playing = 0;
             reset(rec);
             pause(chunk_dur*5);
@@ -70,4 +75,9 @@ function reset(obj)
         stop(obj);
         record(obj);
         %fprintf("DEBUG AFTER: %d\n",obj.TotalSamples);
+end
+
+function endProgram()
+    delete(rec);
+    delete(app);
 end

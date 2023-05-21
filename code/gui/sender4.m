@@ -1,4 +1,4 @@
-function sender4(str, channel,digit_smp)
+function sender4(str, channel,digit_smp,inter_smp)
 
     tic
 
@@ -12,12 +12,12 @@ function sender4(str, channel,digit_smp)
              2160 2400 2640 2880;
              3120 3360 3600 3840];
 
-    %digit_dur = 0.0104;                % digit sound duration (s)
-    %inter_dur = 0.005;                 % inter digit silence duration (s)
+    %digit_dur = 0.01;                % digit sound duration (s)
+    %inter_dur = 0.005;               % inter digit silence duration (s)
     %digit_smp = fs * digit_dur;
     %digit_smp = 500;
     %inter_smp = fs * inter_dur;
-    inter_smp = 80;
+    %inter_smp = 80;
 
     t = (0:digit_smp-1) * ts;       % time definition for each digit
 
@@ -36,7 +36,9 @@ function sender4(str, channel,digit_smp)
     audio = zeros(1,digit_smp * length(str) + inter_smp * (length(str) +1));
 
     for i = 1:length(str)
-        audio((1:digit_smp) + (digit_smp * (i-1) + inter_smp * i)) = digit(sym(:,i));
+        d = digit(sym(:,i));
+        d = 0.95 * d/max(d);
+        audio((1:digit_smp) + (digit_smp * (i-1) + inter_smp * i)) = d;
     end
     
     toc
