@@ -17,7 +17,7 @@ function sender4(str, channel,digit_smp)
     %digit_smp = fs * digit_dur;
     %digit_smp = 500;
     %inter_smp = fs * inter_dur;
-    inter_smp = 50;
+    inter_smp = 80;
 
     t = (0:digit_smp-1) * ts;       % time definition for each digit
 
