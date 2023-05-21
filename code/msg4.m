@@ -17,6 +17,8 @@ app = findobj(gui4);
 stop(rec);
 record(rec);
 
+min_chunks = 10;
+
 while(~isrecording(rec))
 end
 
@@ -27,6 +29,7 @@ pause(chunk_dur * 10);
 audio = getaudiodata(rec);
 app.trigger.Value = max(sum(abs(audio).^2) * 10,5);
 
+max_fails = 3;
 is_playing = 0;
 
 while(isrecording(rec))
@@ -44,19 +47,24 @@ while(isrecording(rec))
 
     if(is_playing)
         if(E < trigger)
-            fprintf("Ended\n")
-            audio = audio(first_pos:end);
-            message = decrypt(symbol_to_ascii(receiver4(audio,app.channel.Value)),app.password.Value);
-            if(~isempty(message))
-                app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",message)];
-                plot(app.graph,audio);
+            fails = fails + 1;
+            
+            if(fails > max_fails)
+                fprintf("Ended\n")
+                audio = audio(first_pos:end);
+                message = decrypt(symbol_to_ascii(receiver4(audio,app.channel.Value)),app.password.Value);
+                if(~isempty(message))
+                    app.msg_box.Value = [app.msg_box.Value; '' ;strcat("[←] ",message)];
+                    plot(app.graph,audio);
+                end
+                is_playing = 0;
+                reset(rec);
+                pause(chunk_dur*5);
             end
-            is_playing = 0;
-            reset(rec);
-            pause(chunk_dur*5);
         end
     elseif(E > trigger)
         fprintf("Started ");
+        fails = 0;
         first_pos = rec.CurrentSample - 2*chunk;
         is_playing = 1;
     end
