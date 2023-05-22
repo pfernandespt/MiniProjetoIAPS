@@ -11,13 +11,11 @@ rec = audiorecorder(fs,16,1,selectMic());
 
 app = findobj(gui4);
 
-[num_ch1, den_ch1] = butter(3,0.5,"low");
-[num_ch2, den_ch2] = butter(3,0.5,"high");
+[num_ch1, den_ch1] = butter(3,0.5,"low");  % LowPass Butter Filter for CH1
+[num_ch2, den_ch2] = butter(3,0.5,"high"); % HighPass Butter Filter for CH2
 
 stop(rec);
 record(rec);
-
-min_chunks = 10;
 
 while(~isrecording(rec))
 end

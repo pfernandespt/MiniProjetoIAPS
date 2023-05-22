@@ -22,17 +22,24 @@
 
 close all;
 
-[num_ch1, den_ch1] = butter(4,0.5,"low");
-[num_ch2, den_ch2] = butter(4,0.5,"high");
+[num_ch1, den_ch1] = butter(3,0.5,"low");
+[num_ch2, den_ch2] = butter(3,0.5,"high");
 
 figure()
-subplot(2,1,1);
+%subplot(1,2,1);
 [H,w] = freqz(num_ch1,den_ch1);
-plot(w/pi,abs(H));
-xline([240/12e3 3840/12e3]);
-xline([8160/12e3 11760/12e3]);
-subplot(2,1,2);
+plot(w/pi * 12e3,abs(H));
+xline([240 3840],'Color','green','LineWidth',1);
+xline([8160 11760],'Color','red','LineWidth',1);
+xlabel('Frequência [Hz]')
+ylabel('Ganho');
+title('Filtro CH1');
+%subplot(1,2,2);
+figure();
 [H,w] = freqz(num_ch2,den_ch2);
-plot(w/pi,abs(H));
-xline([240/12e3 3840/12e3]);
-xline([8160/12e3 11760/12e3]);
+plot(w/pi * 12e3,abs(H));
+xline([240 3840],'Color','red','LineWidth',1);
+xline([8160 11760],'Color','green','LineWidth',1);
+xlabel('Frequência [Hz]');
+ylabel('Ganho');
+title('Filtro CH2');

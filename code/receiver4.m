@@ -33,6 +33,7 @@ function symbols = receiver4(audio,channel)
     % DEBUG
     plot(audio);
     hold on;
+    plot(an_detect);
     plot(dg_detect);
     hold off;
 
