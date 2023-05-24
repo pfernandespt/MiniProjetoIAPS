@@ -1,73 +1,77 @@
-function symbols = receiver4(audio,channel)
+function symbols = receiver4(audio, channel)
 
-    %  ========= Fuction Parameters ====================================
+% ========= Fuction Parameters ===========================================
 
     fs = 24e3;                      % Sampling Fequency
 
-    freqs = [ 240  480  720 960;       % Frequencies in the 4D
+    freqs = [ 240  480  720 960;    % Frequencies in the 4D
              1200 1440 1680 1920;
              2160 2400 2640 2880;
              3120 3360 3600 3840];
 
-    samples = [24 12 8 6 4.8 4 3 2.4 2 1.6 1.5 1.2 1 0.8 0.6 0.5 0.4 0.3 0.2] * 1e3;
+    offset = 7920 * (channel - 1);
 
+    min_samples = 200;              % Minimum number of samples
     tol = 110;                      % Frequency tolerance
 
     %[num, den] = butter(5,0.02,'low');
-    filter_delay = 50;              % Filter delay in number of samples
 
-    offset = 7920 * (channel - 1);
-
-    %  ========= Symbol Detection ======================================
+% ========= Symbol Detection =============================================
 
     audio = audio';
 
-    %an_detect = filter(num,den,abs(audio));     % Analog symbol detection
-    an_detect = conv(ones(1,100),abs(audio));
-
+    %an_detect = filter(num,den,abs(audio));
+    an_detect = conv(ones(1,100),abs(audio));   % Analog symbol detection
+    
     an_detect_diff = conv(ones(1,100),diff(an_detect));
 
+    [~,strt] = findpeaks(an_detect_diff .*  (an_detect_diff > 0),...
+        'MinPeakProminence',10);    % Find positive peaks
+    [~,stop] = findpeaks(an_detect_diff .* -(an_detect_diff < 0),...
+        'MinPeakProminence',10);    % Find negative peaks
     
+    if(length(strt) == length(stop))            % Normal situation
+        slot = [strt;stop];
+        slot = slot - 100;   % Correct causal systems delay
 
-%     trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
-    %trigger = mean([max(an_detect) min(an_detect(100:end))]);
+    elseif(length(strt) - length(stop) == 2)    % Discard sound board noise
+        slot = [strt(2:end-1);stop];
+        slot = slot - 100;   % Correct causal systems delay
+    
+    else                                        % Use alternative method
+        fprinft("DEBUG: Using alternative detection method\n");
 
-%     dg_detect = (an_detect > trigger);           % Conversion to Digital
-%     dg_detect = dg_detect((filter_delay+1):end);
+        %trigger = mean([max(an_detect) min(an_detect)]);
+        trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
 
-    % DEBUG
+        dg_detect = (an_detect > trigger);      % Conversion to Digital
+        dg_detect = dg_detect((filter_delay+1):end);
+
+        inv = [dg_detect 0] - [0 dg_detect];    % Digit start and end
+        slot = [find(inv == 1);find(inv == -1)];
+    end
+
+    %DEBUG
     plot(audio);
     hold on;
-    plot(an_detect/100);
-    %plot(dg_detect);
-    %yline(trigger/100);
-    %hold off;
-
-    %  ========= Symbol Positions Organization =========================
-
-    %inv = [dg_detect 0] - [0 dg_detect];    % Digit start and end
-    %slot = [find(inv == 1);find(inv == -1)];
-
-    [~,strt] = findpeaks(an_detect_diff .* (an_detect_diff > 0),'MinPeakProminence',1);
-    [~,stop] = findpeaks(an_detect_diff .* -(an_detect_diff < 0),'MinPeakProminence',1);
-    slot = [strt;stop];
-
-    %stem(5*slot(1,:));
-    %stem(5*slot(2,:));
+    plot(an_detect/50,'Color','black');
+    xline(slot(1,:),'Color','green');
+    xline(slot(2,:),'Color','red');
     hold off;
 
-    %  ========= Symbol Decoding =======================================
+% ========= Symbol Decoding ==============================================
+    
     current_symbol = 1;
     symbols = zeros(4,size(slot,2));
     
 
     for i = 1:size(slot,2)
-        if((slot(2,i) - slot(1,i) + 1) < samples(end))   % Check dimension
-            fprintf("DEBUG: slot isn't big enough (%d)\n",i);
+        if((slot(2,i) - slot(1,i) + 1) < min_samples)   % Check dimension
+            fprintf("DEBUG: slot isn't big enough (%d samples)\n",i);
             continue;
         end
+
         s = audio(slot(1,i):slot(2,i));         % Isolate symbol
-        %s = s(1:samples(find(length(s) > samples,1)));  % Adapt samples to regular steps
 
         S = abs(fft(s));                        % Fast Fourier Transform
         freq_res = fs/length(S);                % Frequency resolution
@@ -76,7 +80,7 @@ function symbols = receiver4(audio,channel)
         %DEBUG
         %figure()
         %stem(Sf,S,'.');
-        %fprintf("Received %d samples and de freq_res is %d\n",length(S),freq_res);
+        %fprintf("%d samples -> freq_res: %d\n",length(S),freq_res);
 
         for j = 1:4
             min_pos = floor((freqs(j,1)+offset-tol)/freq_res); % Separate
@@ -101,7 +105,7 @@ function symbols = receiver4(audio,channel)
         if(isempty(find(symbols(:,current_symbol) == 0,1)))
             current_symbol = current_symbol +1;
         else
-            fprintf("This is not a digit...\n")
+            fprintf("DEBUG: This is not a digit...\n")
         end
 
         %DEBUG
@@ -109,6 +113,6 @@ function symbols = receiver4(audio,channel)
 
     end
 
-    symbols = symbols(:,1:(current_symbol-1));         % Delete unused positions
+    symbols = symbols(:,1:(current_symbol-1));  % Delete unused positions
 
 end
