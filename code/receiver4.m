@@ -45,7 +45,7 @@ function symbols = receiver4(audio, channel)
         trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
 
         dg_detect = (an_detect > trigger);      % Conversion to Digital
-        dg_detect = dg_detect((filter_delay+1):end);
+        dg_detect = dg_detect((50+1):end);
 
         inv = [dg_detect 0] - [0 dg_detect];    % Digit start and end
         slot = [find(inv == 1);find(inv == -1)];
@@ -57,6 +57,7 @@ function symbols = receiver4(audio, channel)
     plot(an_detect/50,'Color','black');
     xline(slot(1,:),'Color','green');
     xline(slot(2,:),'Color','red');
+    legend("audio","an_detect","symbol_start","symbol_end");
     hold off;
 
 % ========= Symbol Decoding ==============================================
