@@ -30,15 +30,15 @@ function symbols = receiver4(audio, channel)
     [~,stop] = findpeaks(an_detect_diff .* -(an_detect_diff < 0),...
         'MinPeakProminence',10);    % Find negative peaks
     
-    if(length(strt) == length(stop))            % Normal situation
+    if((length(strt) == length(stop)) && (~isempty(strt))) % Normal
         slot = [strt;stop];
         slot = slot - 100;   % Correct causal systems delay
 
-    elseif(length(strt) - length(stop) == 2)    % Discard sound board noise
+    elseif(length(strt) - length(stop) == 2) % Discard sound board noise
         slot = [strt(2:end-1);stop];
         slot = slot - 100;   % Correct causal systems delay
     
-    else                                        % Use alternative method
+    else                                     % Use alternative method
         fprintf("DEBUG: Using alternative detection method\n");
 
         %trigger = mean([max(an_detect) min(an_detect)]);
@@ -57,7 +57,7 @@ function symbols = receiver4(audio, channel)
     plot(an_detect/50,'Color','black');
     xline(slot(1,:),'Color','green');
     xline(slot(2,:),'Color','red');
-    legend("audio","an_detect","symbol_start","symbol_end");
+    %legend("audio","an_detect","symbol_start","symbol_end");
     hold off;
 
 % ========= Symbol Decoding ==============================================
