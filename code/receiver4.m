@@ -39,7 +39,7 @@ function symbols = receiver4(audio, channel)
         slot = slot - 100;   % Correct causal systems delay
     
     else                                        % Use alternative method
-        fprinft("DEBUG: Using alternative detection method\n");
+        fprintf("DEBUG: Using alternative detection method\n");
 
         %trigger = mean([max(an_detect) min(an_detect)]);
         trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
