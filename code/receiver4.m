@@ -13,7 +13,7 @@ function symbols = receiver4(audio,channel)
 
     tol = 110;                      % Frequency tolerance
 
-    [num, den] = butter(5,0.02,'low');
+    %[num, den] = butter(5,0.02,'low');
     filter_delay = 50;              % Filter delay in number of samples
 
     offset = 7920 * (channel - 1);
@@ -25,24 +25,36 @@ function symbols = receiver4(audio,channel)
     %an_detect = filter(num,den,abs(audio));     % Analog symbol detection
     an_detect = conv(ones(1,100),abs(audio));
 
-    trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
+    an_detect_diff = conv(ones(1,100),diff(an_detect));
+
+    
+
+%     trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
     %trigger = mean([max(an_detect) min(an_detect(100:end))]);
 
-    dg_detect = (an_detect > trigger);           % Conversion to Digital
-    dg_detect = dg_detect((filter_delay+1):end);
+%     dg_detect = (an_detect > trigger);           % Conversion to Digital
+%     dg_detect = dg_detect((filter_delay+1):end);
 
     % DEBUG
     plot(audio);
     hold on;
     plot(an_detect/100);
-    plot(dg_detect);
-    yline(trigger/100);
-    hold off;
+    %plot(dg_detect);
+    %yline(trigger/100);
+    %hold off;
 
     %  ========= Symbol Positions Organization =========================
 
-    inv = [dg_detect 0] - [0 dg_detect];    % Digit start and end
-    slot = [find(inv == 1);find(inv == -1)];
+    %inv = [dg_detect 0] - [0 dg_detect];    % Digit start and end
+    %slot = [find(inv == 1);find(inv == -1)];
+
+    [~,strt] = findpeaks(an_detect_diff .* (an_detect_diff > 0),'MinPeakProminence',1);
+    [~,stop] = findpeaks(an_detect_diff .* -(an_detect_diff < 0),'MinPeakProminence',1);
+    slot = [strt;stop];
+
+    %stem(5*slot(1,:));
+    %stem(5*slot(2,:));
+    hold off;
 
     %  ========= Symbol Decoding =======================================
     current_symbol = 1;
