@@ -25,16 +25,18 @@ function symbols = receiver4(audio,channel)
     %an_detect = filter(num,den,abs(audio));     % Analog symbol detection
     an_detect = conv(ones(1,100),abs(audio));
 
-    %trigger = mean([max(an_detect) min(an_detect]);
-    trigger = mean([max(an_detect) min(an_detect(100:end))]);
+    trigger = 5/4 * mean([max(an_detect) min(an_detect)]);
+    %trigger = mean([max(an_detect) min(an_detect(100:end))]);
+
     dg_detect = (an_detect > trigger);           % Conversion to Digital
     dg_detect = dg_detect((filter_delay+1):end);
 
     % DEBUG
     plot(audio);
     hold on;
-    plot(an_detect);
+    plot(an_detect/100);
     plot(dg_detect);
+    yline(trigger/100);
     hold off;
 
     %  ========= Symbol Positions Organization =========================
