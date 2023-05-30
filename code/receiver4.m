@@ -1,4 +1,6 @@
 function symbols = receiver4(audio, channel)
+% symbols(audio, channel)
+% audio is
 
 % ========= Fuction Parameters ===========================================
 
@@ -26,9 +28,9 @@ function symbols = receiver4(audio, channel)
     an_detect_diff = conv(ones(1,100),diff(an_detect));
 
     [~,strt] = findpeaks(an_detect_diff .*  (an_detect_diff > 0),...
-        'MinPeakProminence',10);    % Find positive peaks
+        'MinPeakProminence',5);    % Find positive peaks
     [~,stop] = findpeaks(an_detect_diff .* -(an_detect_diff < 0),...
-        'MinPeakProminence',10);    % Find negative peaks
+        'MinPeakProminence',5);    % Find negative peaks
     
     if((length(strt) == length(stop)) && (~isempty(strt))) % Normal
         slot = [strt;stop];
@@ -52,13 +54,13 @@ function symbols = receiver4(audio, channel)
     end
 
     %DEBUG
-    plot(audio);
-    hold on;
-    plot(an_detect/50,'Color','black');
-    xline(slot(1,:),'Color','green');
-    xline(slot(2,:),'Color','red');
-    %legend("audio","an_detect","symbol_start","symbol_end");
-    hold off;
+%     plot(audio);
+%     hold on;
+%     plot(an_detect/50,'Color','black');
+%     xline(slot(1,:),'Color','green');
+%     xline(slot(2,:),'Color','red');
+%     %legend("audio","an_detect","symbol_start","symbol_end");
+%     hold off;
 
 % ========= Symbol Decoding ==============================================
     

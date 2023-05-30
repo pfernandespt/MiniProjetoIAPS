@@ -1,4 +1,4 @@
-function sender4(str, channel, digit_smp, inter_smp)
+function sender4(sym, channel, digit_smp, inter_smp)
 
 % ========= Fuction Parameters ===========================================
 
@@ -21,12 +21,10 @@ function sender4(str, channel, digit_smp, inter_smp)
                  df(freqs(3,s(3))) + df(freqs(4,s(4)));  % digit
 
 % ========= Audio Formation ==============================================
-
-    sym = ascii_to_symbol(str);     % Conversion from ascii to symbols
     
-    audio = zeros(1,digit_smp *length(str) + inter_smp *(length(str) +1));
+    audio = zeros(1,digit_smp *size(sym,2) + inter_smp *(size(sym,2) +1));
 
-    for i = 1:length(str)
+    for i = 1:size(sym,2)
         d = digit(sym(:,i));
         d = 0.95 * d/max(d);
         audio((1:digit_smp) + (digit_smp * (i-1) + inter_smp * i)) = d;
