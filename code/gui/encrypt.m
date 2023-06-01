@@ -1,4 +1,10 @@
 function msg = encrypt(msg, pwd)
+% encrypt uses a password to decrypt a string
+%   msg = encrypt(msg, pwd)
+%       'msg': string of characters to encrypt
+%       'pwd': password to use for encryption
+%
+%   by: Paulo Fernandes, 108678 (UAveiro)
     
     if(nargin == 1 || isempty(pwd))
         return;

@@ -1,5 +1,11 @@
 function msg = decrypt(msg, pwd)
-    
+% decrypt uses a password to decrypt a string
+%   msg = decrypt(msg, pwd)
+%       'msg': string of characters to decrypt
+%       'pwd': password to use for decryption
+%
+%   by: Paulo Fernandes, 108678 (UAveiro)
+
     if(nargin == 1 || isempty(pwd))
         return;
     end
