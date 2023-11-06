@@ -1,3 +1,9 @@
 *.wav
 *.asv
 video/*
+
+*.doc
+*.docx
+/docs
+*.zip
+*.txt
